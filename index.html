@@ -1,165 +1,138 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Malla Curricular Psicología</title>
-  <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #fff4f9;
-      color: #6c567b;
-      margin: 0;
-      padding: 1rem;
-    }
-    h1 {
-      text-align: center;
-      color: #c94fb1;
-    }
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(6, 1fr);
-      gap: 1rem;
-    }
-    .semester {
-      background-color: #ffe1ef;
-      border: 2px solid #f4b4d5;
-      border-radius: 1rem;
-      padding: 1rem;
-    }
-    .semester h2 {
-      font-size: 1.1rem;
-      color: #b03a8b;
-      text-align: center;
-    }
-    .course {
-      background-color: #ffd5ec;
-      border: 1px solid #f2a9ce;
-      border-radius: 0.5rem;
-      padding: 0.5rem;
-      margin: 0.5rem 0;
-      cursor: pointer;
-      position: relative;
-      color: #5e3b55;
-      font-weight: 500;
-    }
-    .course:hover {
-      background-color: #f9cce6;
-    }
-    .course.completed {
-      background-color: #e6d6f7;
-      border-color: #d5b4f3;
-      text-decoration: line-through;
-      color: #999;
-    }
-    .course.locked {
-      background-color: #fbe8f1;
-      border-color: #f1bfd6;
-      color: #b9839c;
-      cursor: not-allowed;
-    }
-    .course.locked::after {
-      content: attr(data-tooltip);
-      position: absolute;
-      bottom: 100%;
-      left: 50%;
-      transform: translateX(-50%) translateY(-8px);
-      background-color: #af4c91;
-      color: white;
-      padding: 6px 10px;
-      border-radius: 6px;
-      white-space: nowrap;
-      font-size: 0.75rem;
-      z-index: 9999;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.2s ease;
-    }
-    .course.locked:hover::after,
-    .course.locked:focus::after,
-    .course.locked:active::after {
-      opacity: 1;
-      pointer-events: auto;
-    }
-    .course.locked:focus {
-      outline: none;
-    }
-    #reset {
-      display: block;
-      margin: 2rem auto;
-      padding: 0.7rem 1.5rem;
-      background-color: #e7a2cd;
-      color: white;
-      border: none;
-      border-radius: 1rem;
-      font-size: 1rem;
-      cursor: pointer;
-    }
-    #reset:hover {
-      background-color: #d473b0;
-    }
-    @media (hover: none) and (pointer: coarse) {
-      .course.locked:active::after {
-        opacity: 1;
-      }
-    }
-  </style>
-</head>
-<body>
-  <h1>Malla Curricular Psicología – UdelaR</h1>
-  <div class="grid" id="malla"></div>
-  <button id="reset">Borrar progreso</button>
-  <script>
-    const cursos = [...]; // ya definido
-    const requisitos = {...}; // ya definido
-    const estado = JSON.parse(localStorage.getItem("malla_psico_2013")) || {};
+<script>
+  const cursos = [
+    {
+      semestre: "1º semestre",
+      materias: [
+        "Historia de la Psicología",
+        "Neurobiología de la mente",
+        "Fundamentos de la Psicología",
+        "Epistemología",
+        "Herramientas para el trabajo intelectual",
+        "Arti. de Saberes I",
+        "Inicio a la formación en Psicología",
+      ],
+    },
+    {
+      semestre: "2º semestre",
+      materias: [
+        "Psicología del desarrollo",
+        "Procesos cognitivos",
+        "Teorías psicológicas",
+        "Métodos y herramientas orientadas a la extensión",
+        "Metodología general de la investigación",
+        "Arti. de Saberes II",
+        "Formación integral",
+      ],
+    },
+    {
+      semestre: "3º semestre",
+      materias: [
+        "Psicología social",
+        "Psicología, sujeto y aprendizaje",
+        "Ética y deontología",
+        "Métodos y técnicas cuantitativas o cualitativas",
+        "Arti. de Saberes III",
+      ],
+    },
+    {
+      semestre: "4º semestre",
+      materias: [
+        "Clínica I",
+        "Psicología y salud",
+        "Herramientas de la Psicología Clínica",
+        "Métodos y técnicas cuantitativas o cualitativas",
+        "Herramientas de la Psicología Social",
+        "Diseño de proyectos",
+        "Arti. de Saberes IV",
+      ],
+    },
+    {
+      semestre: "5º semestre",
+      materias: [
+        "Psicología Clínica",
+        "Neuropsicología",
+        "Clínica II",
+        "Proyectos",
+        "Prácticas integral",
+        "Arti. de Saberes V",
+        "Construcción de itinerario",
+      ],
+    },
+    {
+      semestre: "6º semestre",
+      materias: [
+        "Problemáticas contemporáneas de la Psicología Social",
+        "Psicología y educación",
+        "Dispositivos Psicoterapéuticos",
+        "Proyectos Prácticas integral",
+        "Arti. de Saberes VI",
+        "Construcción de itinerario",
+      ],
+    },
+  ];
 
-    function crearMalla() {
-      const contenedor = document.getElementById("malla");
-      contenedor.innerHTML = '';
+  const requisitos = {
+    "Psicología y salud": ["Psicología del desarrollo", "Arti. de Saberes II"],
+    "Clínica I": ["Ética y deontología", "Arti. de Saberes III"],
+    "Herramientas de la Psicología Clínica": ["Arti. de Saberes III"],
+    "Diseño de proyectos": ["Metodología general de la investigación", "Métodos y técnicas cuantitativas o cualitativas"],
+    "Herramientas de la Psicología Social": ["Psicología social"],
+    "Psicología Clínica": ["Clínica I", "Herramientas de la Psicología Clínica"],
+    "Clínica II": ["Herramientas de la Psicología Clínica"],
+    "Neuropsicología": ["Procesos cognitivos"],
+    "Arti. de Saberes V": ["Herramientas de la Psicología Social", "Arti. de Saberes IV"],
+    "Construcción de itinerario": ["Psicología social", "Psicología, sujeto y aprendizaje", "Clínica I", "Psicología y salud"],
+    "Dispositivos Psicoterapéuticos": ["Clínica I", "Clínica II"],
+    "Psicología y educación": ["Psicología, sujeto y aprendizaje"],
+    "Arti. de Saberes VI": ["Arti. de Saberes I", "Arti. de Saberes II", "Arti. de Saberes III"],
+  };
 
-      cursos.forEach(({ semestre, materias }) => {
-        const col = document.createElement("div");
-        col.className = "semester";
-        col.innerHTML = `<h2>${semestre}</h2>`;
+  const estado = JSON.parse(localStorage.getItem("malla_psico_2013")) || {};
 
-        materias.forEach((materia) => {
-          const div = document.createElement("div");
-          div.className = "course";
-          div.textContent = materia;
-          div.tabIndex = 0;
+  function crearMalla() {
+    const contenedor = document.getElementById("malla");
+    contenedor.innerHTML = '';
 
-          if (estado[materia]) div.classList.add("completed");
+    cursos.forEach(({ semestre, materias }) => {
+      const col = document.createElement("div");
+      col.className = "semester";
+      col.innerHTML = `<h2>${semestre}</h2>`;
 
-          const reqs = requisitos[materia];
-          if (reqs && !reqs.every((r) => estado[r])) {
-            div.classList.add("locked");
-            div.dataset.tooltip = "Requiere: " + reqs.filter((r) => !estado[r]).join(", ");
-          }
+      materias.forEach((materia) => {
+        const div = document.createElement("div");
+        div.className = "course";
+        div.textContent = materia;
+        div.tabIndex = 0;
 
-          div.addEventListener("click", () => {
-            if (div.classList.contains("locked")) return;
-            div.classList.toggle("completed");
-            estado[materia] = div.classList.contains("completed");
-            localStorage.setItem("malla_psico_2013", JSON.stringify(estado));
-            location.reload();
-          });
+        if (estado[materia]) div.classList.add("completed");
 
-          col.appendChild(div);
+        const reqs = requisitos[materia];
+        if (reqs && !reqs.every((r) => estado[r])) {
+          div.classList.add("locked");
+          div.dataset.tooltip = "Requiere: " + reqs.filter((r) => !estado[r]).join(", ");
+        }
+
+        div.addEventListener("click", () => {
+          if (div.classList.contains("locked")) return;
+          div.classList.toggle("completed");
+          estado[materia] = div.classList.contains("completed");
+          localStorage.setItem("malla_psico_2013", JSON.stringify(estado));
+          location.reload();
         });
 
-        contenedor.appendChild(col);
+        col.appendChild(div);
       });
-    }
 
-    document.getElementById("reset").addEventListener("click", () => {
-      if (confirm("¿Estás segura de que querés borrar tu progreso?")) {
-        localStorage.removeItem("malla_psico_2013");
-        location.reload();
-      }
+      contenedor.appendChild(col);
     });
+  }
 
-    crearMalla();
-  </script>
-</body>
-</html>
+  document.getElementById("reset").addEventListener("click", () => {
+    if (confirm("¿Estás segura de que querés borrar tu progreso?")) {
+      localStorage.removeItem("malla_psico_2013");
+      location.reload();
+    }
+  });
+
+  crearMalla();
+</script>
