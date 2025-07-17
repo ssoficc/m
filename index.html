@@ -39,8 +39,9 @@
       padding: 0.5rem;
       margin: 0.5rem 0;
       cursor: pointer;
-      transition: background-color 0.1s ease;
       position: relative;
+      color: #5e3b55;
+      font-weight: 500;
     }
     .course:hover {
       background-color: #f9cce6;
@@ -49,6 +50,7 @@
       background-color: #e6d6f7;
       border-color: #d5b4f3;
       text-decoration: line-through;
+      color: #999;
     }
     .course.locked {
       background-color: #fbe8f1;
@@ -108,8 +110,8 @@
   <div class="grid" id="malla"></div>
   <button id="reset">Borrar progreso</button>
   <script>
-    const cursos = [...]; // aquí sigue igual, ya está definido en el código anterior
-    const requisitos = {...}; // lo mismo aquí
+    const cursos = [...]; // ya definido
+    const requisitos = {...}; // ya definido
     const estado = JSON.parse(localStorage.getItem("malla_psico_2013")) || {};
 
     function crearMalla() {
