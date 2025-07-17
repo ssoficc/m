@@ -98,12 +98,100 @@
   <div class="grid" id="malla"></div>
   <button id="reset">Borrar progreso</button>
   <script>
-    const cursos = [/* ... mismo contenido ... */];
-    const requisitos = { /* ... mismo contenido ... */ };
+    const cursos = [
+      {
+        semestre: "1º semestre",
+        materias: [
+          "Historia de la Psicología",
+          "Neurobiología de la mente",
+          "Fundamentos de la Psicología",
+          "Epistemología",
+          "Herramientas para el trabajo intelectual",
+          "Arti. de Saberes I",
+          "Inicio a la formación en Psicología",
+        ],
+      },
+      {
+        semestre: "2º semestre",
+        materias: [
+          "Psicología del desarrollo",
+          "Procesos cognitivos",
+          "Teorías psicológicas",
+          "Métodos y herramientas orientadas a la extensión",
+          "Metodología general de la investigación",
+          "Arti. de Saberes II",
+          "Formación integral",
+        ],
+      },
+      {
+        semestre: "3º semestre",
+        materias: [
+          "Psicología social",
+          "Psicología, sujeto y aprendizaje",
+          "Ética y deontología",
+          "Métodos y técnicas cuantitativas o cualitativas",
+          "Arti. de Saberes III",
+        ],
+      },
+      {
+        semestre: "4º semestre",
+        materias: [
+          "Clínica I",
+          "Psicología y salud",
+          "Herramientas de la Psicología Clínica",
+          "Métodos y técnicas cuantitativas o cualitativas",
+          "Herramientas de la Psicología Social",
+          "Diseño de proyectos",
+          "Arti. de Saberes IV",
+        ],
+      },
+      {
+        semestre: "5º semestre",
+        materias: [
+          "Psicología Clínica",
+          "Neuropsicología",
+          "Clínica II",
+          "Proyectos",
+          "Prácticas integral",
+          "Arti. de Saberes V",
+          "Construcción de itinerario",
+        ],
+      },
+      {
+        semestre: "6º semestre",
+        materias: [
+          "Problemáticas contemporáneas de la Psicología Social",
+          "Psicología y educación",
+          "Dispositivos Psicoterapéuticos",
+          "Proyectos Prácticas integral",
+          "Arti. de Saberes VI",
+          "Construcción de itinerario",
+        ],
+      },
+    ];
+
+    const requisitos = {
+      "Psicología y salud": ["Psicología del desarrollo", "Arti. de Saberes II"],
+      "Clínica I": ["Ética y deontología", "Arti. de Saberes III"],
+      "Herramientas de la Psicología Clínica": ["Arti. de Saberes III"],
+      "Diseño de proyectos": ["Metodología general de la investigación", "Métodos y técnicas cuantitativas o cualitativas"],
+      "Herramientas de la Psicología Social": ["Psicología social"],
+      "Psicología Clínica": ["Clínica I", "Herramientas de la Psicología Clínica"],
+      "Clínica II": ["Herramientas de la Psicología Clínica"],
+      "Neuropsicología": ["Procesos cognitivos"],
+      "Arti. de Saberes V": ["Herramientas de la Psicología Social", "Arti. de Saberes IV"],
+      "Construcción de itinerario": ["Psicología social", "Psicología, sujeto y aprendizaje", "Clínica I", "Psicología y salud"],
+      "Dispositivos Psicoterapéuticos": ["Clínica I", "Clínica II"],
+      "Psicología y educación": ["Psicología, sujeto y aprendizaje"],
+      "Arti. de Saberes VI": ["Arti. de Saberes I", "Arti. de Saberes II", "Arti. de Saberes III"],
+    };
+
     const estado = JSON.parse(localStorage.getItem("malla_psico_2013")) || {};
 
     function crearMalla() {
       const contenedor = document.getElementById("malla");
+      contenedor.innerHTML = ''; // limpiar antes de crear
+
       cursos.forEach(({ semestre, materias }) => {
         const col = document.createElement("div");
         col.className = "semester";
