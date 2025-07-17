@@ -60,12 +60,12 @@
       color: #b9839c;
       cursor: not-allowed;
     }
-    .course.locked:hover::after {
+    .course.locked::after {
       content: attr(data-tooltip);
       position: absolute;
-      top: 50%;
-      left: 105%;
-      transform: translateY(-50%);
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%) translateY(-8px);
       background-color: #af4c91;
       color: white;
       padding: 6px 10px;
@@ -73,7 +73,18 @@
       white-space: nowrap;
       font-size: 0.75rem;
       z-index: 9999;
-      box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.2);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+    .course.locked:hover::after,
+    .course.locked:focus::after,
+    .course.locked:active::after {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .course.locked:focus {
+      outline: none;
     }
     #reset {
       display: block;
@@ -90,6 +101,11 @@
     }
     #reset:hover {
       background-color: #d473b0;
+    }
+    @media (hover: none) and (pointer: coarse) {
+      .course.locked:active::after {
+        opacity: 1;
+      }
     }
   </style>
 </head>
@@ -108,8 +124,8 @@
           "Epistemología",
           "Herramientas para el trabajo intelectual",
           "Arti. de Saberes I",
-          "Inicio a la formación en Psicología",
-        ],
+          "Inicio a la formación en Psicología"
+        ]
       },
       {
         semestre: "2º semestre",
@@ -120,8 +136,8 @@
           "Métodos y herramientas orientadas a la extensión",
           "Metodología general de la investigación",
           "Arti. de Saberes II",
-          "Formación integral",
-        ],
+          "Formación integral"
+        ]
       },
       {
         semestre: "3º semestre",
@@ -130,8 +146,8 @@
           "Psicología, sujeto y aprendizaje",
           "Ética y deontología",
           "Métodos y técnicas cuantitativas o cualitativas",
-          "Arti. de Saberes III",
-        ],
+          "Arti. de Saberes III"
+        ]
       },
       {
         semestre: "4º semestre",
@@ -142,8 +158,8 @@
           "Métodos y técnicas cuantitativas o cualitativas",
           "Herramientas de la Psicología Social",
           "Diseño de proyectos",
-          "Arti. de Saberes IV",
-        ],
+          "Arti. de Saberes IV"
+        ]
       },
       {
         semestre: "5º semestre",
@@ -154,8 +170,8 @@
           "Proyectos",
           "Prácticas integral",
           "Arti. de Saberes V",
-          "Construcción de itinerario",
-        ],
+          "Construcción de itinerario"
+        ]
       },
       {
         semestre: "6º semestre",
@@ -165,9 +181,9 @@
           "Dispositivos Psicoterapéuticos",
           "Proyectos Prácticas integral",
           "Arti. de Saberes VI",
-          "Construcción de itinerario",
-        ],
-      },
+          "Construcción de itinerario"
+        ]
+      }
     ];
 
     const requisitos = {
@@ -183,14 +199,14 @@
       "Construcción de itinerario": ["Psicología social", "Psicología, sujeto y aprendizaje", "Clínica I", "Psicología y salud"],
       "Dispositivos Psicoterapéuticos": ["Clínica I", "Clínica II"],
       "Psicología y educación": ["Psicología, sujeto y aprendizaje"],
-      "Arti. de Saberes VI": ["Arti. de Saberes I", "Arti. de Saberes II", "Arti. de Saberes III"],
+      "Arti. de Saberes VI": ["Arti. de Saberes I", "Arti. de Saberes II", "Arti. de Saberes III"]
     };
 
     const estado = JSON.parse(localStorage.getItem("malla_psico_2013")) || {};
 
     function crearMalla() {
       const contenedor = document.getElementById("malla");
-      contenedor.innerHTML = ''; // limpiar antes de crear
+      contenedor.innerHTML = '';
 
       cursos.forEach(({ semestre, materias }) => {
         const col = document.createElement("div");
@@ -201,6 +217,7 @@
           const div = document.createElement("div");
           div.className = "course";
           div.textContent = materia;
+          div.tabIndex = 0;
 
           if (estado[materia]) div.classList.add("completed");
 
