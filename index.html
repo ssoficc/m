@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Malla Curricular Psicología</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #fff4f9;
+      color: #6c567b;
+      margin: 0;
+      padding: 1rem;
+    }
+    h1 {
+      text-align: center;
+      color: #c94fb1;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 1rem;
+    }
+    .semester {
+      background-color: #ffe1ef;
+      border: 2px solid #f4b4d5;
+      border-radius: 1rem;
+      padding: 1rem;
+      box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.05);
+    }
+    .semester h2 {
+      font-size: 1.1rem;
+      color: #b03a8b;
+      text-align: center;
+    }
+    .course {
+      background-color: #ffd5ec;
+      border: 1px solid #f2a9ce;
+      border-radius: 0.5rem;
+      padding: 0.5rem;
+      margin: 0.5rem 0;
+      cursor: pointer;
+      transition: transform 0.1s ease, box-shadow 0.2s ease;
+      position: relative;
+      box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.08);
+      z-index: 1;
+    }
+    .course:hover {
+      transform: translateY(-2px);
+      box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.12);
+    }
+    .course.completed {
+      background-color: #e6d6f7;
+      border-color: #d5b4f3;
+      text-decoration: line-through;
+    }
+    .course.locked {
+      background-color: #fbe8f1;
+      border-color: #f1bfd6;
+      color: #b9839c;
+      cursor: not-allowed;
+    }
+    .course.locked:hover::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      top: 50%;
+      left: 105%;
+      transform: translateY(-50%);
+      background-color: #af4c91;
+      color: white;
+      padding: 6px 10px;
+      border-radius: 6px;
+      white-space: nowrap;
+      font-size: 0.75rem;
+      z-index: 9999;
+      box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.2);
+    }
+    #reset {
+      display: block;
+      margin: 2rem auto;
+      padding: 0.7rem 1.5rem;
+      background-color: #e7a2cd;
+      color: white;
+      border: none;
+      border-radius: 1rem;
+      font-size: 1rem;
+      cursor: pointer;
+      box-shadow: 2px 2px 6px rgba(0,0,0,0.1);
+      transition: background-color 0.2s ease;
+    }
+    #reset:hover {
+      background-color: #d473b0;
+    }
+  </style>
+</head>
+<body>
+  <h1>Malla Curricular Psicología – UdelaR</h1>
+  <div class="grid" id="malla"></div>
+  <button id="reset">Borrar progreso</button>
+  <script>
+    const cursos = [/* ... mismo contenido ... */];
+    const requisitos = { /* ... mismo contenido ... */ };
+    const estado = JSON.parse(localStorage.getItem("malla_psico_2013")) || {};
+
+    function crearMalla() {
+      const contenedor = document.getElementById("malla");
+      cursos.forEach(({ semestre, materias }) => {
+        const col = document.createElement("div");
+        col.className = "semester";
+        col.innerHTML = `<h2>${semestre}</h2>`;
+
+        materias.forEach((materia) => {
+          const div = document.createElement("div");
+          div.className = "course";
+          div.textContent = materia;
+
+          if (estado[materia]) div.classList.add("completed");
+
+          const reqs = requisitos[materia];
+          if (reqs && !reqs.every((r) => estado[r])) {
+            div.classList.add("locked");
+            div.dataset.tooltip = "Requiere: " + reqs.filter((r) => !estado[r]).join(", ");
+          }
+
+          div.addEventListener("click", () => {
+            if (div.classList.contains("locked")) return;
+            div.classList.toggle("completed");
+            estado[materia] = div.classList.contains("completed");
+            localStorage.setItem("malla_psico_2013", JSON.stringify(estado));
+            location.reload();
+          });
+
+          col.appendChild(div);
+        });
+
+        contenedor.appendChild(col);
+      });
+    }
+
+    document.getElementById("reset").addEventListener("click", () => {
+      if (confirm("¿Estás segura de que querés borrar tu progreso?")) {
+        localStorage.removeItem("malla_psico_2013");
+        location.reload();
+      }
+    });
+
+    crearMalla();
+  </script>
+</body>
+</html>
